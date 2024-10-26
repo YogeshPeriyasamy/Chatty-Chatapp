@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Chatty</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
+</head>
+
+<body>
+    <div class="inputbox">
+        <div class="inputs">
+            <label for="name">Name :</label>
+            <input type="text" name="name" id="name" required>
+            <label for="mail">Mail id :</label>
+            <input type="email" name="mail" id="mail" required>
+            <label for="loginpassword">Password :</label>
+            <input type="password" name="loginpassword" id="loginpassword" required>
+        </div>
+        <div class="buttonele">
+            <button type="submit" id="loginbutton">login</button>
+        </div>
+
+    </div>
+    <div class="newuser">
+        <a id="newuser" href="http://localhost:3000/chatty/signuppage">newUser?</a>
+    </div>
+    
+</body>
+<script>
+    // to get the frontend response from backend
+       document.getElementById("loginbutton").addEventListener("click",async()=>{
+           const name=document.getElementById("name").value;
+           const mail=document.getElementById("mail").value;
+           const loginpassword=document.getElementById("loginpassword").value;
+           try{
+           const loginresponse=await axios.post('http://localhost:3000/chatty/logindetails',{name,mail,loginpassword});
+           alert(loginresponse.data.message)
+           }catch (err){
+            console.log("in login frontend",err);
+           }
+       })
+</script>
+</html>

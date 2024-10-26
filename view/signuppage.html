@@ -1,0 +1,47 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>sign up Chatty</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
+</head>
+
+<body>
+    <div class="inputbox">
+        <div class="inputs">
+            <label for="name">Name :</label>
+            <input type="text" name="name" id="name" required>
+            <label for="mail">Mail id :</label>
+            <input type="email" name="mail" id="mail" required>
+            <label for="phonenumber">Phone number :</label>
+            <input type="number" name="phonenumber" id="phonenumber" required>
+            <label for="signuppassword">Password :</label>
+            <input type="password" name="signuppassword" id="signuppassword" required>
+        </div>
+        <div class="buttonele">
+            <button type="submit" id="signupbutton">SignUp</button>
+        </div>
+    </div>
+    
+</body>
+<script>
+    // to get the frontend response from backend
+       document.getElementById("signupbutton").addEventListener("click",async()=>{
+           const name=document.getElementById("name").value;
+           const mail=document.getElementById("mail").value;
+           const phnumber=document.getElementById("phonenumber").value;
+           const signuppassword=document.getElementById("signuppassword").value;
+           try{
+           const signupresponse=await axios.post('http://localhost:3000/chatty/signup',{name,mail,phnumber,signuppassword});
+           alert(signupresponse.data.message)
+           if(signupresponse.data.redirect){
+            window.location.href=signupresponse.data.url;
+           }
+           }catch (err){
+            console.log("in signup frontend",err);
+           }
+       })
+</script>
+</html>
