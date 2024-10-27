@@ -51,10 +51,13 @@ exports.addlogin=async(req,res)=>{
     bcrypt.compare(loginpassword,user.password,async(err,result)=>{
         if(result){
             req.session.userId=user.id;
+            console.log("session id on loginage", req.session.userId)
             await req.session.save((err)=>{
+                if(err){
                 console.log("req session mot registered");
+                }
             })
-            res.json({message:"user logged in",redirect:true,})
+            res.json({message:"user logged in",redirect:true,url:'http://localhost:3000/chatty/chatbox'})
         }
         else{
             res.json({message:"password not matched"});

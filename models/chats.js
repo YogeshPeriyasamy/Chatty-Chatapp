@@ -1,6 +1,6 @@
 const Sequelize=require("sequelize");
 const sequelize=require('../util/database');
-const User=sequelize.define("user",{
+const Chats=sequelize.define("chats",{
     id :{
         type:Sequelize.INTEGER,
         allowNull:false,
@@ -11,18 +11,9 @@ const User=sequelize.define("user",{
         type:Sequelize.STRING,
         allowNull:false,
     },
-    mail : {
-        type:Sequelize.STRING,
-        allowNull:false,
-        unique:true,
-    },
-    phnumber :{
-        type:Sequelize.CHAR,
-        allowNull:false,
-    },
-    password:{
+    text:{
         type:Sequelize.STRING,
         allowNull:false,
     }
 })
-module.exports=User;
+module.exports=Chats;

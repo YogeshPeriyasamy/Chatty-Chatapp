@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>chatty</title>
+    <link rel="stylesheet" href="/chatpage.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
+</head>
+<body>
+    <div class="outer">
+        <div class="mainheader">
+            <h1>Chats</h1>
+        </div>
+        <div class="chats" id="messages"> </div>
+        <div class="inputmessage">
+            <input type="text" id="text" placeholder="type a message..."/>
+            <button onclick="sendmessage()">send</button>
+        </div>
+    </div>
+</body>
+<script>
+    //to fetch all the messages
+    const chatsdiv=document.getElementById("messages");
+    setInterval(fetchmessages,2000);
+    async function fetchmessages(){
+        try{
+           const response=await axios.get('http://localhost:3000/chatty/fetchallchats',{withCredentials:true})
+           const allchats=response.data.chats;
+           const username=response.data.username;
+           chatsdiv.innerHTML=""; 
+           allchats.forEach((chat) => {
+               addchat(chat,username);
+           });
+        }catch(err){
+            console.log("fetching messages from frontend ",err)
+        }
+    }
+
+    //to add the chats in ui
+    async function addchat(chat,username){
+        const newmsg=document.createElement('div');
+        newmsg.className = `message ${chat.name === username ? 'you' : ''}`;//to assign css property differently for the you user
+        newmsg.textContent=`${chat.name==username?"you":chat.name} : ${chat.text}`;
+        chatsdiv.appendChild(newmsg);
+    }
+    
+
+    //frontend tosend msg to backend
+    async function sendmessage(){
+        const text=document.getElementById("text").value;
+        try{
+        const messages=await axios.post('http://localhost:3000/chatty/addchats',{text},{withCredentials:true})
+        fetchmessages();
+        document.getElementById("text").value="";
+        }catch(err){
+            console.log("sending msg from frontend",err);
+        }
+    }
+</script>
+</html>

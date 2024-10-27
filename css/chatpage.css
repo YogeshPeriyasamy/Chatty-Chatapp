@@ -1,0 +1,78 @@
+/* Reset some browser default styles */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: Arial, sans-serif;
+}
+
+/* Outer wrapper for the entire layout */
+.outer {
+    display: flex;
+    flex-direction: column;
+    height: 100vh; /* Full height of the viewport */
+    background-color: white;
+}
+
+/* Header Section */
+.mainheader {
+    background-color: black;
+    color: white;
+    text-align: center;
+    padding: 10px;
+}
+
+/* Chat messages container */
+.chats {
+    flex: 1; /* Takes up all remaining space */
+    overflow-y: auto; /* Scroll if content overflows */
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+/* Individual message bubble */
+.message {
+    background-color: #d3d3d3; /* Light grey for the message */
+    padding: 10px;
+    border-radius: 5px;
+    max-width: 70%; /* Ensure message doesn't take full width */
+    word-wrap: break-word;
+    align-self: flex-start; /* Align messages to the left by default */
+}
+
+/* Align "You" messages to the right */
+.message.you {
+    align-self: flex-end;
+    background-color: #a9a9a9; /* Slightly darker grey for user's messages */
+}
+
+/* Input message section */
+.inputmessage {
+    display: flex;
+    padding: 10px;
+    background-color: black; /* Dark blue for the footer */
+}
+
+/* Input field styling */
+.inputmessage input {
+    flex: 1; /* Take up most of the space */
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
+    margin-right: 10px;
+}
+
+/* Send button styling */
+.inputmessage button {
+    padding: 10px 20px;
+    background-color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+}
+
+.inputmessage button:hover {
+    background-color: #ddd;
+}

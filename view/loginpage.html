@@ -5,6 +5,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login Chatty</title>
+    <link rel="stylesheet" href="/frontpage.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
 </head>
 
@@ -37,6 +38,9 @@
            try{
            const loginresponse=await axios.post('http://localhost:3000/chatty/logindetails',{name,mail,loginpassword});
            alert(loginresponse.data.message)
+           if(loginresponse.data.redirect){
+            window.location.href=loginresponse.data.url;
+           }
            }catch (err){
             console.log("in login frontend",err);
            }
