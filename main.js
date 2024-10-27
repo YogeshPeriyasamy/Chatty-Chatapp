@@ -38,8 +38,18 @@ const userdb=require('./models/user');
 const chatdb=require('./models/chats');
 
 //to establish relation between tables
-userdb.hasMany(chatdb);
-chatdb.belongsTo(userdb);
+userdb.hasMany(chatdb, {
+    foreignKey: 'userId',
+    onDelete: 'CASCADE',  // Delete all associated chats if the user is deleted
+});
+
+chatdb.belongsTo(userdb, {
+    foreignKey: {
+        name: 'userId',
+        allowNull: false,  // Ensure userId cannot be null
+    },
+});
+
 
 
 sequelize.sync()

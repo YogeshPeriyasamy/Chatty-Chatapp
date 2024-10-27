@@ -22,12 +22,37 @@
 <script>
     //to fetch all the messages
     const chatsdiv=document.getElementById("messages");
-    setInterval(fetchmessages,2000);
+    const STORAGE_KEY="CHATTYMSG";
+    const STORAGELIMIT=100;
+
+    window.onload=function(){
+        fetchmessages();
+        setInterval(fetchmessages,2000);
+    }
+    
+    // to load messages from local storage
+    async function laodfromlocalstorage(){
+        return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
+    }
+    
     async function fetchmessages(){
         try{
-           const response=await axios.get('http://localhost:3000/chatty/fetchallchats',{withCredentials:true})
-           const allchats=response.data.chats;
+           const oldchats=await laodfromlocalstorage();
+           // Check if 'oldChats' is indeed an array
+        if (!Array.isArray(oldchats)) {
+            throw new TypeError("oldChats is not iterable. Expected an array.");
+        }
+           console.log("old chats",oldchats);
+           const after=oldchats.length>0?(oldchats[oldchats.length-1]).id:0;
+           console.log("after",after);
+           const response=await axios.get(`http://localhost:3000/chatty/fetchallchats?after=${after}`,{withCredentials:true})
+           const newchats=response.data.chats;
            const username=response.data.username;
+           console.log("newchats",newchats);
+           const allchats=[...oldchats,...newchats].slice(-STORAGELIMIT);
+           console.log("allchats",allchats);
+           //localstorage gets updated with new messages every 2 seconds
+           await localStorage.setItem(STORAGE_KEY,JSON.stringify(allchats))
            chatsdiv.innerHTML=""; 
            allchats.forEach((chat) => {
                addchat(chat,username);
