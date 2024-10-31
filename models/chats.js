@@ -15,5 +15,5 @@ const Chats=sequelize.define("chats",{
         type:Sequelize.STRING,
         allowNull:false,
     }
-})
+},{ freezeTableName: true,})
 module.exports=Chats;

@@ -1,78 +1,111 @@
-/* Reset some browser default styles */
+/* General Reset */
 * {
     margin: 0;
     padding: 0;
     box-sizing: border-box;
-    font-family: Arial, sans-serif;
 }
 
-/* Outer wrapper for the entire layout */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f5f5f5;
+}
+
+/* Outer Container */
 .outer {
     display: flex;
     flex-direction: column;
-    height: 100vh; /* Full height of the viewport */
-    background-color: white;
+    height: 100vh; /* Full height */
 }
 
-/* Header Section */
+/* Header */
 .mainheader {
-    background-color: black;
+    background-color: #4CAF50; /* Green */
     color: white;
-    text-align: center;
     padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
-/* Chat messages container */
-.chats {
-    flex: 1; /* Takes up all remaining space */
-    overflow-y: auto; /* Scroll if content overflows */
-    padding: 20px;
+/* Main Outer Box */
+.mainouterbox {
+    display: flex;
+    flex: 1; /* Occupy remaining space */
+    overflow: hidden; /* Prevent overflow */
+}
+
+/* Existing Groups */
+.existinggroups {
+    width: 20%; /* Occupy 20% of the width */
+    background-color: #e8e8e8;
+    padding: 10px;
+    border-right: 1px solid #ccc;
+    overflow-y: auto; /* Allow scrolling */
+}
+
+/* Main Chat Box */
+.mainbox {
     display: flex;
     flex-direction: column;
-    gap: 10px;
+    flex: 1; /* Occupy remaining space */
+    position: relative; /* Position for absolute children */
 }
 
-/* Individual message bubble */
-.message {
-    background-color: #d3d3d3; /* Light grey for the message */
+/* Messages Area */
+.chats {
+    flex: 1; /* Take remaining space above input */
     padding: 10px;
-    border-radius: 5px;
-    max-width: 70%; /* Ensure message doesn't take full width */
-    word-wrap: break-word;
-    align-self: flex-start; /* Align messages to the left by default */
+    overflow-y: auto; /* Allow scrolling for messages */
+    border: 1px solid #ccc;
+    background-color: white;
 }
 
-/* Align "You" messages to the right */
-.message.you {
-    align-self: flex-end;
-    background-color: #a9a9a9; /* Slightly darker grey for user's messages */
-}
-
-/* Input message section */
+/* Input Message Box */
 .inputmessage {
     display: flex;
+    position: absolute; /* Position it at the bottom */
+    bottom: 0;
+    left: 0;
+    right: 0;
     padding: 10px;
-    background-color: black; /* Dark blue for the footer */
+    background-color: #fff; /* White background */
+    border-top: 1px solid #ccc; /* Top border */
 }
 
-/* Input field styling */
+/* Input Field */
 .inputmessage input {
-    flex: 1; /* Take up most of the space */
+    flex: 1; /* Take up all available space */
     padding: 10px;
-    border: none;
+    border: 1px solid #ccc;
     border-radius: 5px;
-    margin-right: 10px;
 }
 
-/* Send button styling */
+/* Send Button */
 .inputmessage button {
-    padding: 10px 20px;
-    background-color: white;
+    padding: 10px 15px;
+    margin-left: 10px;
     border: none;
+    background-color: #4CAF50; /* Green */
+    color: white;
     border-radius: 5px;
     cursor: pointer;
 }
 
-.inputmessage button:hover {
-    background-color: #ddd;
+/* Message Styles */
+.message {
+    margin: 5px 0;
+    padding: 8px;
+    border-radius: 5px;
+}
+
+/* You Message */
+.message.you {
+    background-color: #d3f9d8; /* Light green */
+    text-align: right; /* Align text to right */
+}
+
+/* Other Messages */
+.message:not(.you) {
+    background-color: #e0e0e0; /* Light gray */
+    text-align: left; /* Align text to left */
 }

@@ -1,7 +1,8 @@
 const bcrypt=require("bcrypt");
 const path=require("path");
 const userdb=require('../models/user');
-
+const sequelize = require("../util/database");
+const Sequelize=require("sequelize");
 // tologin
 exports.login=(req,res)=>{
     res.sendFile(path.join(__dirname,('../view/loginpage.html')));
@@ -67,4 +68,17 @@ exports.addlogin=async(req,res)=>{
     console.log("while loging in",err);
 }
 
+}
+
+// to get the tablesnames
+exports.gettables=async(req,res)=>{
+try{
+   const queryinterface=sequelize.getQueryInterface();
+   const tables=await queryinterface.showAllTables()
+   console.log("tables fetches",tables);
+   const filteredTables = tables.filter(table => table !== "user" && table !== "chats");
+   res.json(filteredTables);
+}catch(err){
+    console.log("while getting tablesnames from be",err)
+}
 }

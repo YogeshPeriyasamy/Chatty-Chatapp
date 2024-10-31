@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -7,80 +8,242 @@
     <link rel="stylesheet" href="/chatpage.css">
     <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/1.7.7/axios.min.js"></script>
 </head>
+
 <body>
     <div class="outer">
         <div class="mainheader">
+            <p id="status">main group</p>
             <h1>Chats</h1>
+            <select id="customSelect" class="button-select">
+                <option value="" disabled selected hidden>...</option>
+                <option value="add">🖉 addgroup</option>
+                <!-- <option value="delete">🗑️ Delete</option>
+                <option value="share">🔗 Share</option> -->
+            </select>
+
         </div>
-        <div class="chats" id="messages"> </div>
-        <div class="inputmessage">
-            <input type="text" id="text" placeholder="type a message..."/>
-            <button onclick="sendmessage()">send</button>
+        <div class="mainouterbox">
+            <div class="existinggroups">
+                <button id="backbutton">mainchat</button>
+                <h2>Groups</h2>
+                <ul id="groupnames"></ul>
+            </div>
+            <div class="mainbox">
+                <div class="chats" id="messages"> </div>
+                <div class="inputmessage">
+                    <input type="text" id="text" placeholder="type a message..." />
+                    <button class="inputmessage_button">send</button>
+                </div>
+            </div>
         </div>
     </div>
 </body>
 <script>
     //to fetch all the messages
-    const chatsdiv=document.getElementById("messages");
-    const STORAGE_KEY="CHATTYMSG";
-    const STORAGELIMIT=100;
+    const chatsdiv = document.getElementById("messages");
+    const STORAGE_KEY = "CHATTYMSG";
+    const STORAGELIMIT = 100;
 
-    window.onload=function(){
-        fetchmessages();
-        setInterval(fetchmessages,2000);
-    }
-    
+    window.onload = function () {
+    fetchmessages(); // Initial fetch for main group messages
+    gettables();     // Populate groups
+
+    setInterval(() => {
+        const status = document.getElementById("status").textContent;
+        
+        if (status === "main group") {
+            console.log("Fetching messages for main group");
+            fetchmessages();
+        } else {
+            console.log(`Fetching messages for group: ${status}`);
+            getthattable(status); // Pass the group name in status as a parameter
+        }
+    }, 5000); // Check every 5 seconds
+};
+
+
     // to load messages from local storage
-    async function laodfromlocalstorage(){
+    async function laodfromlocalstorage() {
         return JSON.parse(localStorage.getItem(STORAGE_KEY)) || [];
     }
-    
-    async function fetchmessages(){
-        try{
-           const oldchats=await laodfromlocalstorage();
-           // Check if 'oldChats' is indeed an array
-        if (!Array.isArray(oldchats)) {
-            throw new TypeError("oldChats is not iterable. Expected an array.");
+
+    // to get the tables to dispal in groups tab
+    async function gettables(){
+      try{
+        const tables=await axios.get(`http://localhost:3000/chatty/gettables`, { withCredentials: true })
+        const alltables=tables.data;
+        const grouptab=document.getElementById("groupnames");
+        grouptab.innerHTML="";
+        for(const table of alltables){
+            const list=document.createElement("li");
+            list.className="groupslist";
+            list.textContent=table;
+            grouptab.appendChild(list);
+            // to create a function to perform the action
+            list.addEventListener('click',()=>{
+                console.log("table to be fetched",table);
+                 getthattable(table);
+            })
         }
-           console.log("old chats",oldchats);
-           const after=oldchats.length>0?(oldchats[oldchats.length-1]).id:0;
-           console.log("after",after);
-           const response=await axios.get(`http://localhost:3000/chatty/fetchallchats?after=${after}`,{withCredentials:true})
-           const newchats=response.data.chats;
-           const username=response.data.username;
-           console.log("newchats",newchats);
-           const allchats=[...oldchats,...newchats].slice(-STORAGELIMIT);
-           console.log("allchats",allchats);
-           //localstorage gets updated with new messages every 2 seconds
-           await localStorage.setItem(STORAGE_KEY,JSON.stringify(allchats))
-           chatsdiv.innerHTML=""; 
-           allchats.forEach((chat) => {
-               addchat(chat,username);
-           });
-        }catch(err){
-            console.log("fetching messages from frontend ",err)
+      }catch(err){
+        console.log("getting tables from fe",err)
+      }
+    }
+
+
+    async function fetchmessages() {
+        try {
+            const oldchats = await laodfromlocalstorage();
+            // Check if 'oldChats' is indeed an array
+            if (!Array.isArray(oldchats)) {
+                throw new TypeError("oldChats is not iterable. Expected an array.");
+            }
+            console.log("old chats", oldchats);
+            const after = oldchats.length > 0 ? (oldchats[oldchats.length - 1]).id : 0;
+            //console.log("after", after);
+            const response = await axios.get(`http://localhost:3000/chatty/fetchallchats?after=${after}`, { withCredentials: true })
+            const newchats = response.data.chats;
+            const username = response.data.username;
+            console.log("newchats", newchats);
+            const allchats = [...oldchats, ...newchats].slice(-STORAGELIMIT);
+            console.log("allchats", allchats);
+            //localstorage gets updated with new messages every 2 seconds
+            await localStorage.setItem(STORAGE_KEY, JSON.stringify(allchats))
+            chatsdiv.innerHTML = "";
+            allchats.forEach((chat) => {
+                addchat(chat, username);
+            });
+        } catch (err) {
+            console.log("fetching messages from frontend ", err)
         }
     }
 
     //to add the chats in ui
-    async function addchat(chat,username){
-        const newmsg=document.createElement('div');
+    async function addchat(chat, username) {
+        console.log("during display",chat,username);
+        const newmsg = document.createElement('div');
         newmsg.className = `message ${chat.name === username ? 'you' : ''}`;//to assign css property differently for the you user
-        newmsg.textContent=`${chat.name==username?"you":chat.name} : ${chat.text}`;
+        newmsg.textContent = `${chat.name == username ? "you" : chat.name} : ${chat.text}`;
         chatsdiv.appendChild(newmsg);
     }
-    
 
+    document.querySelector('.inputmessage_button').addEventListener('click', async (event) => {
+    event.preventDefault(); // Prevent the default form submission
+    await sendmessage(); // Call your sendmessage function
+    });
     //frontend tosend msg to backend
-    async function sendmessage(){
-        const text=document.getElementById("text").value;
+    async function sendmessage() {
+    const text = document.getElementById("text").value;
+    const currentstatus = document.getElementById("status").textContent;
+    try {
+        if (currentstatus === "main group") {
+            const messages = await axios.post('http://localhost:3000/chatty/addchats', { text }, { withCredentials: true });
+            console.log("Message sent to main group:", text); // Log the message sent
+            document.getElementById("text").value = ""; // Clear the input
+            fetchmessages(); // Fetch messages for the main group
+        } else {
+            const messages = await axios.post(`http://localhost:3000/chatty/addgroupchats?current=${currentstatus}`, { text }, { withCredentials: true });
+            console.log("Message sent to group:", currentstatus, text); // Log the message sent to the group
+            document.getElementById("text").value = ""; // Clear the input
+            getthattable(currentstatus); // Fetch messages for the specified group
+        }
+    } catch (err) {
+        console.log("Error sending message from frontend:", err); // Log any errors
+    }
+}
+
+    //to handle the add group option
+    document.getElementById("customSelect").addEventListener("change", async (event) => {
+        const option = event.target.value;
+        try {
+            if (option == "add") {
+                let selectedusers=[];
+                const mainbox = document.querySelector(".mainbox");
+                const getusers=await axios.get('http://localhost:3000/chatty/getusersforgroup', { withCredentials: true });
+                const users=getusers.data;
+                
+                mainbox.innerHTML = `
+              <div class="addgroupbox" id="addgroupbox">
+                <label for="groupname">Group name :</label>
+                <input type="text" id="groupname" name="groupname"/>
+                <div class="userlist">
+                    <h4>add members</h4>
+                    ${users.map(user=>`<div class="user_item" data-name="${user.name}">${user.name}</div> `).join("")}
+                    <button id="creategroupdb">Create</button>
+                </div>
+              </div>
+              `;
+              //to create a array of selected peole
+              document.querySelectorAll(".user_item").forEach((item)=>{
+                item.addEventListener('click',(e)=>{
+                    const username=e.target.dataset.name;
+                    console.log("username selected",username);
+                    if(!selectedusers.includes(username)){
+                        selectedusers.push(username);
+                        e.target.style.backgroundColor = "#d3f9d8"; // Mark as selected
+                        //console.log("users for group",selectedusers);
+                    }
+                    else{
+                        //to unselect
+                        selectedusers=selectedusers.filter(name=>name!==username);
+                        e.target.style.backgroundColor = ""; // Mark as unselected
+                    }
+                })
+              })
+              document.getElementById("creategroupdb").addEventListener('click',async()=>{
+                const group_name=document.getElementById("groupname").value;
+                try{
+                    if(group_name&&(selectedusers.length>0)){
+                    const resp=await axios.post('http://localhost:3000/chatty/creategroup',{group_name,members:selectedusers}, { withCredentials: true })
+                    alert(resp.data.message);
+                    
+                    }
+                    else{
+                        alert("Enter group name and select atleast one user");
+                    }
+                }catch(err){
+                    console.log("while sending users to add in db from frontend",err);
+                }
+                
+              })
+
+            }
+           
+        } catch (err) {
+            console.log("in frontend while adding group", err)
+        }
+        // Reset to placeholder after action
+        event.target.selectedIndex = 0;
+    })
+
+    //function to get that partcular group chats
+    async function getthattable(tablename){
         try{
-        const messages=await axios.post('http://localhost:3000/chatty/addchats',{text},{withCredentials:true})
-        fetchmessages();
-        document.getElementById("text").value="";
+            console.log("table is clicked",tablename);
+            const response=await axios.get(`http://localhost:3000/chatty/fetchgroupchats?groupname=${tablename}`, { withCredentials: true })
+            const name=response.data.username;
+            const allgroupchats=response.data.allchats;
+            console.log("groupchtas",allgroupchats);
+            chatsdiv.innerHTML = "";
+            document.getElementById("status").textContent=tablename;
+             for(const chat of allgroupchats){
+                console.log("during fetch",chat,name);
+                addchat(chat,name);
+            };
+            
         }catch(err){
-            console.log("sending msg from frontend",err);
+            console.log("while getting the particular tables chats from fe",err)
         }
     }
+
+    //functio for back button 
+    document.getElementById("backbutton").addEventListener('click',async()=>{
+       const status=await document.getElementById("status")
+       status.textContent="main group";
+        console.log("back button is clicked");
+        window.location.href="http://localhost:3000/chatty/chatbox";
+        
+    })
 </script>
+
 </html>
