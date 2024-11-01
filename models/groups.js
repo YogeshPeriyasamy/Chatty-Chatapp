@@ -30,7 +30,15 @@ async function getGroupModel(groupName) {
                 type: Sequelize.INTEGER,
                 allowNull: false,
             },
-        }, { freezeTableName: true, timestamps: false });
+            isadmin:{
+                type: Sequelize.BOOLEAN,
+                allowNull: false,
+            },
+            ismember:{
+                type: Sequelize.BOOLEAN,
+                allowNull: false,
+            }
+        }, { freezeTableName: true, });
 
         // Sync only when defining a new model
         await sequelize.models[modelName].sync();

@@ -3,6 +3,7 @@ const path=require("path");
 const userdb=require('../models/user');
 const sequelize = require("../util/database");
 const Sequelize=require("sequelize");
+const getGroupModel = require('../models/groups');
 // tologin
 exports.login=(req,res)=>{
     res.sendFile(path.join(__dirname,('../view/loginpage.html')));
@@ -77,7 +78,20 @@ try{
    const tables=await queryinterface.showAllTables()
    console.log("tables fetches",tables);
    const filteredTables = tables.filter(table => table !== "user" && table !== "chats");
-   res.json(filteredTables);
+   const refilteredtables=[];
+   for(const table of filteredTables){
+    const model=await getGroupModel(table);
+    if(!model){
+        console.log("model not found to filter the tables names");
+        continue;
+    }
+    const row=await model.findOne({where:{userid:req.session.userId}});
+   if(row){
+    refilteredtables.push(table);
+   }
+   }
+   console.log("refiltered tables",refilteredtables);
+   res.json(refilteredtables);
 }catch(err){
     console.log("while getting tablesnames from be",err)
 }

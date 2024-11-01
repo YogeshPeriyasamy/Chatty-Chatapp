@@ -13,7 +13,7 @@
     <div class="outer">
         <div class="mainheader">
             <p id="status">main group</p>
-            <h1>Chats</h1>
+            <h1>Chatty</h1>
             <select id="customSelect" class="button-select">
                 <option value="" disabled selected hidden>...</option>
                 <option value="add">🖉 addgroup</option>
@@ -196,7 +196,7 @@
                     if(group_name&&(selectedusers.length>0)){
                     const resp=await axios.post('http://localhost:3000/chatty/creategroup',{group_name,members:selectedusers}, { withCredentials: true })
                     alert(resp.data.message);
-                    
+                    gettables();
                     }
                     else{
                         alert("Enter group name and select atleast one user");
@@ -223,6 +223,10 @@
             const response=await axios.get(`http://localhost:3000/chatty/fetchgroupchats?groupname=${tablename}`, { withCredentials: true })
             const name=response.data.username;
             const allgroupchats=response.data.allchats;
+            const usernames=response.data.names;
+            console.log("usernames we got from group",usernames);
+            //calling the function to change the group names to usenames
+            changeusernames(usernames,tablename)
             console.log("groupchtas",allgroupchats);
             chatsdiv.innerHTML = "";
             document.getElementById("status").textContent=tablename;
@@ -244,6 +248,44 @@
         window.location.href="http://localhost:3000/chatty/chatbox";
         
     })
+
+    // function to  add names 
+    async function changeusernames(names,tablename){
+        const namesdiv=document.getElementById("groupnames");
+        namesdiv.innerHTML="";
+        names.forEach(async(name)=>{
+            const isadmin=await axios.post(`http://localhost:3000/chatty/isadmin`,{name,tablename}, { withCredentials: true })
+            const namelist=document.createElement("li");
+            namelist.className="nameclass";
+            namelist.textContent=name;
+            //create a add admin button
+            const Abutton=document.createElement("button");
+            Abutton.textContent="A";
+            Abutton.addEventListener('click',async()=>{
+                console.log("Add admin button is clicked",name,tablename);
+                try{
+                   const resonse=await axios.post(`http://localhost:3000/chatty/newadmin`,{name,tablename}, { withCredentials: true })
+                }catch(err){
+                    console.log("chaning member to admin ",err)
+                }
+            })
+            // create a remove user button
+            const Dbutton=document.createElement("button");
+            Dbutton.textContent="D";
+            Dbutton.addEventListener('click',async()=>{
+                console.log("remove user button is clicked",name,tablename);
+                await axios.post(`http://localhost:3000/chatty/removemember`,{name,tablename}, { withCredentials: true })
+            })
+            const isadminstatus=document.createElement("p");
+            isadminstatus.textContent="(Admin)";
+            namelist.appendChild(Abutton);
+            namelist.appendChild(Dbutton);
+            if(isadmin.data==true){
+                namelist.appendChild(isadminstatus); 
+            }
+           await namesdiv.appendChild(namelist);
+        })
+    }
 </script>
 
 </html>

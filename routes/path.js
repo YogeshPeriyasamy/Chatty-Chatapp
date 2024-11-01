@@ -30,4 +30,10 @@ router.get("/gettables",user_path.gettables);
 router.get("/fetchgroupchats",group_path.getgroupchats);
 // to send message to the correct group
 router.post("/addgroupchats",group_path.addgroupmessage);
+//to change group user into admin
+router.post("/newadmin",group_path.addnewadmin);
+//to remove member from group
+router.post("/removemember",group_path.removememberfromgroup);
+// to chech the names are admin to display in side 
+router.post("/isadmin",group_path.isadmin);
 module.exports=router;
