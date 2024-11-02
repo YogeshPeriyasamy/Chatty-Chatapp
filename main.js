@@ -2,6 +2,8 @@ const express=require("express");
 const cors=require('cors');
 const session=require("express-session")
 const path=require("path");
+const helmet=require('helmet');
+const compression=require('compression');
 const app=express();
 
 //middlewares
@@ -28,9 +30,17 @@ app.use(cors({
 //to provide css for the boooking page set the route
 app.use(express.static(path.join(__dirname,'css')));
 
+//middelware to add security headers
+app.use(helmet({ contentSecurityPolicy: false }));
+
+//middware to compress our file
+app.use(compression());
+//middle are to config .env
+require('dotenv').config({path:('./util/.env')});
 //router 
 const router=require('./routes/path');
 app.use("/chatty",router);
+
 
 //database
 const sequelize=require('./util/database');
