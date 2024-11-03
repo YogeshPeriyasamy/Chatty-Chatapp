@@ -62,13 +62,14 @@ chatdb.belongsTo(userdb, {
 
 
 
-sequelize.sync()
-.then(()=>{
-    app.listen(3000,()=>{
-        console.log("database synced and port is running");
-    })
-})
-.catch((err)=>{
-    console.log("database not synced",err);
-})
-
+// Async IIFE to handle await
+(async () => {
+    try {
+        await sequelize.sync();
+        app.listen(3000, () => {
+            console.log("Database synced and server is running on port 3000");
+        });
+    } catch (err) {
+        console.error("Database not synced", err);
+    }
+})();
