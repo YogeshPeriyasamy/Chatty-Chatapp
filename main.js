@@ -31,7 +31,7 @@ app.use(cors({
 app.use(express.static(path.join(__dirname,'css')));
 
 //middelware to add security headers
-app.use(helmet({ contentSecurityPolicy: false }));
+//app.use(helmet({ contentSecurityPolicy: false }));
 
 //middware to compress our file
 app.use(compression());
