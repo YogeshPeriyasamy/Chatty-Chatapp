@@ -36,7 +36,7 @@ app.use(express.static(path.join(__dirname,'css')));
 //middware to compress our file
 app.use(compression());
 //middle are to config .env
-require('dotenv').config({path:('./util/.env')});
+//require('dotenv').config({path:('./util/.env')});
 //router 
 const router=require('./routes/path');
 app.use("/chatty",router);
