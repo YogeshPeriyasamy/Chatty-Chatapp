@@ -25,7 +25,7 @@
 
     </div>
     <div class="newuser">
-        <a id="newuser" href="http://localhost:3000/chatty/signuppage">newUser?</a>
+        <a id="newuser" href="http://13.60.18.195:3000/chatty/signuppage">newUser?</a>
     </div>
     
 </body>
@@ -36,7 +36,7 @@
            const mail=document.getElementById("mail").value;
            const loginpassword=document.getElementById("loginpassword").value;
            try{
-           const loginresponse=await axios.post('http://localhost:3000/chatty/logindetails',{name,mail,loginpassword});
+           const loginresponse=await axios.post('http://13.60.18.195:3000/chatty/logindetails',{name,mail,loginpassword});
            alert(loginresponse.data.message)
            if(loginresponse.data.redirect){
             window.location.href=loginresponse.data.url;

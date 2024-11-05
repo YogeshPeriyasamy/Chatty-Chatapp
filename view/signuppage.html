@@ -35,7 +35,7 @@
            const phnumber=document.getElementById("phonenumber").value;
            const signuppassword=document.getElementById("signuppassword").value;
            try{
-           const signupresponse=await axios.post('http://localhost:3000/chatty/signup',{name,mail,phnumber,signuppassword});
+           const signupresponse=await axios.post('http://13.60.18.195:3000/chatty/signup',{name,mail,phnumber,signuppassword});
            alert(signupresponse.data.message)
            if(signupresponse.data.redirect){
             window.location.href=signupresponse.data.url;

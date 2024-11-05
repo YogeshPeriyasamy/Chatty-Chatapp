@@ -29,10 +29,10 @@ exports.signup=async(req,res)=>{
                 phnumber:phnumber,
                 password:encryptedpassword, 
             })
-            res.json({message:"User has been registered",redirect:true,url:'http://localhost:3000/chatty/login'})
+            res.json({message:"User has been registered",redirect:true,url:'http://13.60.18.195:3000/chatty/login'})
         }
         else{
-            res.json({message:"Already a user",redirect:true,url:'http://localhost:3000/chatty/login'})
+            res.json({message:"Already a user",redirect:true,url:'http://13.60.18.195:3000/chatty/login'})
         }
 
     }catch(err){
@@ -59,7 +59,7 @@ exports.addlogin=async(req,res)=>{
                 console.log("req session mot registered");
                 }
             })
-            res.json({message:"user logged in",redirect:true,url:'http://localhost:3000/chatty/chatbox'})
+            res.json({message:"user logged in",redirect:true,url:'http://13.60.18.195:3000/chatty/chatbox'})
         }
         else{
             res.json({message:"password not matched"});

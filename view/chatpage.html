@@ -70,7 +70,7 @@
     // to get the tables to dispal in groups tab
     async function gettables(){
       try{
-        const tables=await axios.get(`http://localhost:3000/chatty/gettables`, { withCredentials: true })
+        const tables=await axios.get(`http://13.60.18.195:3000/chatty/gettables`, { withCredentials: true })
         const alltables=tables.data;
         const grouptab=document.getElementById("groupnames");
         grouptab.innerHTML="";
@@ -101,7 +101,7 @@
             console.log("old chats", oldchats);
             const after = oldchats.length > 0 ? (oldchats[oldchats.length - 1]).id : 0;
             //console.log("after", after);
-            const response = await axios.get(`http://localhost:3000/chatty/fetchallchats?after=${after}`, { withCredentials: true })
+            const response = await axios.get(`http://13.60.18.195:3000/chatty/fetchallchats?after=${after}`, { withCredentials: true })
             const newchats = response.data.chats;
             const username = response.data.username;
             console.log("newchats", newchats);
@@ -137,12 +137,12 @@
     const currentstatus = document.getElementById("status").textContent;
     try {
         if (currentstatus === "main group") {
-            const messages = await axios.post('http://localhost:3000/chatty/addchats', { text }, { withCredentials: true });
+            const messages = await axios.post('http://13.60.18.195:3000/chatty/addchats', { text }, { withCredentials: true });
             console.log("Message sent to main group:", text); // Log the message sent
             document.getElementById("text").value = ""; // Clear the input
             fetchmessages(); // Fetch messages for the main group
         } else {
-            const messages = await axios.post(`http://localhost:3000/chatty/addgroupchats?current=${currentstatus}`, { text }, { withCredentials: true });
+            const messages = await axios.post(`http://13.60.18.195:3000/chatty/addgroupchats?current=${currentstatus}`, { text }, { withCredentials: true });
             console.log("Message sent to group:", currentstatus, text); // Log the message sent to the group
             document.getElementById("text").value = ""; // Clear the input
             getthattable(currentstatus); // Fetch messages for the specified group
@@ -159,7 +159,7 @@
             if (option == "add") {
                 let selectedusers=[];
                 const mainbox = document.querySelector(".mainbox");
-                const getusers=await axios.get('http://localhost:3000/chatty/getusersforgroup', { withCredentials: true });
+                const getusers=await axios.get('http://13.60.18.195:3000/chatty/getusersforgroup', { withCredentials: true });
                 const users=getusers.data;
                 
                 mainbox.innerHTML = `
@@ -194,7 +194,7 @@
                 const group_name=document.getElementById("groupname").value;
                 try{
                     if(group_name&&(selectedusers.length>0)){
-                    const resp=await axios.post('http://localhost:3000/chatty/creategroup',{group_name,members:selectedusers}, { withCredentials: true })
+                    const resp=await axios.post('http://13.60.18.195:3000/chatty/creategroup',{group_name,members:selectedusers}, { withCredentials: true })
                     alert(resp.data.message);
                     gettables();
                     }
@@ -220,7 +220,7 @@
     async function getthattable(tablename){
         try{
             console.log("table is clicked",tablename);
-            const response=await axios.get(`http://localhost:3000/chatty/fetchgroupchats?groupname=${tablename}`, { withCredentials: true })
+            const response=await axios.get(`http://13.60.18.195:3000/chatty/fetchgroupchats?groupname=${tablename}`, { withCredentials: true })
             const name=response.data.username;
             const allgroupchats=response.data.allchats;
             const usernames=response.data.names;
@@ -245,7 +245,7 @@
        const status=await document.getElementById("status")
        status.textContent="main group";
         console.log("back button is clicked");
-        window.location.href="http://localhost:3000/chatty/chatbox";
+        window.location.href="http://13.60.18.195:3000/chatty/chatbox";
         
     })
 
@@ -254,7 +254,7 @@
         const namesdiv=document.getElementById("groupnames");
         namesdiv.innerHTML="";
         names.forEach(async(name)=>{
-            const isadmin=await axios.post(`http://localhost:3000/chatty/isadmin`,{name,tablename}, { withCredentials: true })
+            const isadmin=await axios.post(`http://13.60.18.195:3000/chatty/isadmin`,{name,tablename}, { withCredentials: true })
             const namelist=document.createElement("li");
             namelist.className="nameclass";
             namelist.textContent=name;
@@ -264,7 +264,7 @@
             Abutton.addEventListener('click',async()=>{
                 console.log("Add admin button is clicked",name,tablename);
                 try{
-                   const resonse=await axios.post(`http://localhost:3000/chatty/newadmin`,{name,tablename}, { withCredentials: true })
+                   const resonse=await axios.post(`http://13.60.18.195:3000/chatty/newadmin`,{name,tablename}, { withCredentials: true })
                 }catch(err){
                     console.log("chaning member to admin ",err)
                 }
@@ -274,7 +274,7 @@
             Dbutton.textContent="D";
             Dbutton.addEventListener('click',async()=>{
                 console.log("remove user button is clicked",name,tablename);
-                await axios.post(`http://localhost:3000/chatty/removemember`,{name,tablename}, { withCredentials: true })
+                await axios.post(`http://13.60.18.195:3000/chatty/removemember`,{name,tablename}, { withCredentials: true })
             })
             const isadminstatus=document.createElement("p");
             isadminstatus.textContent="(Admin)";

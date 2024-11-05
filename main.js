@@ -66,7 +66,7 @@ chatdb.belongsTo(userdb, {
 (async () => {
     try {
         await sequelize.sync();
-        app.listen(3000, () => {
+        app.listen(3000, '0.0.0.0',() => {
             console.log("Database synced and server is running on port 3000");
         });
     } catch (err) {
