@@ -5,10 +5,10 @@ const path=require("path");
 // const helmet=require('helmet');
 const compression=require('compression');
 const app=express();
-
+require('dotenv').config({path:'./util/.env'});
 //middlewares
 app.use(session({
-    secret:"loginkey",
+    secret:process.env.SessionSecret,
     resave:false,
     saveUninitialized:false,
     cookie:{

@@ -1,6 +1,6 @@
 const Sequelize=require("sequelize");
-const sequelize=new Sequelize('chattydb','chattyadmin1','YogeshRDS1209',{
+const sequelize=new Sequelize(process.env.chattydb,process.env.username,process.env.password,{
     dialect:"mysql",
-    host:'database-1.c3g844os4jeu.eu-north-1.rds.amazonaws.com',
+    host:process.env.hostname,
 })
 module.exports=sequelize;
